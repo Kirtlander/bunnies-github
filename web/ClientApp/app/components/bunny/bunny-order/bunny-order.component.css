@@ -1,0 +1,20 @@
+.label-col {
+    text-align: right;
+    margin-top: .5em;
+}
+
+p.form-control {
+    margin-bottom: 0;
+}
+
+.row {
+    padding: .5em 0;
+}
+
+.row.row-buttons {
+    text-align: right;
+}
+
+form {
+    margin: 0;
+}

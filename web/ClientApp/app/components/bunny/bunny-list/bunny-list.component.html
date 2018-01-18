@@ -1,0 +1,39 @@
+<div class='form-group has-error' *ngIf='errorMessage'>
+  <p class='form-control'>{{errorMessage}}</p>
+</div>
+
+<div class='panel panel-primary'>
+  <div class='panel-heading'>
+    Bunny Shelter
+  </div>
+  <div class='panel-body'>
+    <table class='table bunny-list'>
+      <thead>
+        <tr>
+          <th class="picture"></th>
+          <th class="name">Name</th>
+          <th class="description">Description</th>
+          <th class="age">Age</th>
+          <th class="likes">Likes</th>
+          <th class="adopt">Adopt</th>
+          <th class="remove" style="text-align: center;">Remove</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor='let bunny of bunnies | filterActiveBunnies' [class.hidden]="bunny.hidden" [class.isMostPopular]="bunny.isMostPopular">
+          <td class="picture"><a href="">
+            <img src="/assets/{{bunny.imageUrl}}" title={{bunny.name}}>
+          </a></td>
+          <td class="name">{{bunny.name}}</td>
+          <td class="description">{{bunny.description}}</td>
+          <td class="age">{{bunny.age}}</td>
+          <td class="likes"><app-like [likes]="bunny.likes" (incremented)="onLike(bunny, $event)"></app-like></td>
+          <td class="adopt">
+            <a class="btn btn-primary" [routerLink]="['/order', bunny.id]">Adopt!</a>
+          </td>
+          <td class="remove"><span class="glyphicon glyphicon-remove" (click)="onRemove(bunny, $event)"></span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>

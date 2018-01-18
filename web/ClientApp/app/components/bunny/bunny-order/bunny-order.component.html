@@ -1,0 +1,51 @@
+<div class='panel panel-primary'>
+  <div class='panel-heading'>
+    {{pageTitle}}
+  </div>
+  <div class='panel-body'>
+    <form [formGroup]="orderForm">
+
+      <div class="row form-group">
+        <div class="col-md-2 label-col">
+          <label for="bunnyName">Bunny Name:</label>
+        </div>
+        <div class="col-md-10">
+          <p class="form-control" id="bunnyName" disabled><span *ngIf="bunny">{{bunny.name}}</span></p>
+        </div>
+      </div>
+
+      <div class="row form-group" [class.has-error]="displayMessage.name">
+        <div class="col-md-2 label-col">
+          <label for="name">Name:</label>
+        </div>
+        <div class="col-md-10">
+          <input type="text" class="form-control" id="name" placeholder="Name (required)" formControlName="name">
+          <span class="help-block" *ngIf="displayMessage.name">
+            {{displayMessage.name}}
+          </span>
+        </div>
+      </div>
+
+      <div class="row form-group" [class.has-error]="displayMessage.email">
+          <div class="col-md-2 label-col">
+          <label for="email">Email:</label>
+        </div>
+        <div class="col-md-10">
+          <input type="email" class="form-control" id="email" placeholder="Email (required)" formControlName="email">
+          <span class="help-block" *ngIf="displayMessage.email">
+            {{displayMessage.email}}
+          </span>
+        </div>
+      </div>
+
+      <div class="row row-buttons">
+        <div class="col-md-12">
+          <button class="btn btn-primary" type="submit" [disabled]='!orderForm.valid'>
+            Order <span *ngIf="bunny">{{bunny.name}}</span>
+          </button>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</div>

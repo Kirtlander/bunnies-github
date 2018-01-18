@@ -1,0 +1,21 @@
+.bunny-list .picture {
+    width: 200px;
+}
+
+.bunny-list .remove,
+.bunny-list .likes,
+.bunny-list .adopt {
+    text-align: center;
+}
+
+.bunny-list .remove span {
+    cursor: pointer;
+}
+
+.bunny-list .age {
+    text-align: right;
+}
+
+.bunny-list .isMostPopular {
+    background-color: lightgreen;
+}
