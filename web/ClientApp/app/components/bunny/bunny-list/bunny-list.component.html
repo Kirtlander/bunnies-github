@@ -22,7 +22,7 @@
       <tbody>
         <tr *ngFor='let bunny of bunnies | filterActiveBunnies' [class.hidden]="bunny.hidden" [class.isMostPopular]="bunny.isMostPopular">
           <td class="picture"><a href="">
-            <img src="/assets/{{bunny.imageUrl}}" title={{bunny.name}}>
+            <img src="/assets/img/{{bunny.imageUrl}}" title={{bunny.name}}>
           </a></td>
           <td class="name">{{bunny.name}}</td>
           <td class="description">{{bunny.description}}</td>

@@ -9,19 +9,19 @@ import './rxjs-operators';
 
 @Injectable()
 export class DataService {
-    private _bunnyUrl = 'api/bunnies.json';
+    private _bunnyUrl = 'api/Bunnies';
     // cached bunny stash - "the truth"
     private _bunnies: IBunny[];
     private _bunnySubject: Subject<IBunny[]>;
 
-    constructor(private _http: HttpClient) {
+    constructor(private _httpClient: HttpClient) {
         this._bunnySubject = new Subject<IBunny[]>();
-        this._bunnies = mockBunnies;
+        //this._bunnies = mockBunnies;
     }
 
     getBunnies(): Observable<IBunny[]> {
         if (!this._bunnies) {
-            this._http.get<IBunny[]>(this._bunnyUrl)
+            this._httpClient.get<IBunny[]>(this._bunnyUrl)
                 .catch(err => this.handleError(err))
                 .subscribe(bunnies => {
                     this.logBunnies(bunnies);
@@ -35,35 +35,42 @@ export class DataService {
     }
 
     getBunny(id: number): Observable<IBunny> {
-        //if (!this._bunnies) {
-        //    // go to the cage and get the bunnies
-        //    return this.getBunnies()
-        //        .map(bunnies => bunnies.find(bunny => bunny.id === id));
-        //}
+        if (!this._bunnies) {
+            // go to the cage and get the bunnies
+            return this.getBunnies()
+            // TODO - try to use flatMap, then filter
+                .map(bunnies => bunnies.find(bunny => bunny.id === id)) as Observable<IBunny> ;
+        }
         return Observable.create((observer: Observer<IBunny>) =>
             observer.next(this.getBunnyFromCache(id)));
     }
 
     hideBunny(id: number): void {
-        const bunny = this.getBunnyFromCache(id);
-        bunny.hidden = true;
-        this.notify();
+        let bunny = this.getBunnyFromCache(id);
+        this._httpClient.delete<boolean>(this._bunnyUrl + `/${id}`)
+            .catch(err => this.handleError(err))
+            .subscribe(success => {
+                bunny.hidden = true;
+                success && this.notify();
+            });
+
+        //this.notify();
     }
 
     likeBunny(id: number): void {
-        const bunny = this.getBunnyFromCache(id);
+        let bunny = this.getBunnyFromCache(id);
         bunny.likes++;
         this.notify();
     }
 
     private updateBunny(updatedBunny: IBunny) {
-        const bunny = this.getBunnyFromCache(updatedBunny.id);
+        let bunny = this.getBunnyFromCache(updatedBunny.id);
         Object.assign(bunny, updatedBunny);
         this.notify();
     }
 
     private handleError(error: any) {
-        const errMsg = error.message ||
+        let errMsg = error.message ||
             error.status && `${error.status} - ${error.statusText}` ||
             'Server error';
         console.error(errMsg);
@@ -76,7 +83,7 @@ export class DataService {
             // this.getBunnies().subscribe(next => )
             throw new Error('No bunnies!!');
         }
-       const bunnyIndex = this._bunnies.findIndex(bunny => bunny.id === id);
+       let bunnyIndex = this._bunnies.findIndex(bunny => bunny.id === id);
         return this._bunnies[bunnyIndex];
     }
 
@@ -84,7 +91,7 @@ export class DataService {
      * Notifies @field this._bunnySubject subscribers of a change with a copy of the originals
      */
     private notify(): void {
-        const clone = JSON.parse(JSON.stringify(this._bunnies));
+        let clone = JSON.parse(JSON.stringify(this._bunnies));
         this._bunnySubject.next(clone);
     }
 
