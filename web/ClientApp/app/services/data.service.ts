@@ -53,20 +53,25 @@ export class DataService {
                 bunny.hidden = true;
                 success && this.notify();
             });
-
-        //this.notify();
     }
 
     likeBunny(id: number): void {
         let bunny = this.getBunnyFromCache(id);
         bunny.likes++;
-        this.notify();
+        this.updateBunny(bunny);
     }
 
-    private updateBunny(updatedBunny: IBunny) {
-        let bunny = this.getBunnyFromCache(updatedBunny.id);
-        Object.assign(bunny, updatedBunny);
-        this.notify();
+    private updateBunny(bunny: IBunny) {
+        let cachedBunny = this.getBunnyFromCache(bunny.id);
+        if (!cachedBunny) {
+            this.handleError("Bunny not found to update");
+        }
+        this._httpClient.put<IBunny>(this._bunnyUrl + `/${bunny.id}`, bunny)
+            .catch(err => this.handleError(err))
+            .subscribe(dbBunny => {
+                Object.assign(cachedBunny, dbBunny);
+                this.notify();
+            });
     }
 
     private handleError(error: any) {

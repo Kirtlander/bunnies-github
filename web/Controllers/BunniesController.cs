@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Web.Models;
@@ -56,15 +58,35 @@ namespace Web.Controllers
             return Bunnies;
         }
 
-        [HttpDelete("{id}")]public bool Delete(int id)
+        [HttpPut("{id}")]
+        public IActionResult Put(int id, [FromBody] Bunny bunny)
+        {
+            var dbBunny = Bunnies.FirstOrDefault(b => b.Id == id);
+            if (dbBunny == null)
+            {
+                return NotFound();
+            }
+            dbBunny.Hidden = bunny.Hidden;
+            dbBunny.Age = bunny.Age;
+            dbBunny.Description = bunny.Description;
+            dbBunny.ImageUrl = bunny.ImageUrl;
+            dbBunny.IsMostPopular = bunny.IsMostPopular;
+            dbBunny.Likes = bunny.Likes;
+            dbBunny.Name = bunny.Name;
+            return Ok(dbBunny);
+
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
         {
             var bunny = Bunnies.FirstOrDefault(b => b.Id == id);
             if (bunny == null)
             {
-                return false;
+                return Ok(false);
             }
             bunny.Hidden = true;
-            return true;
+            return Ok(true);
         }
 
     }
